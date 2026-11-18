@@ -1,0 +1,6 @@
+# Git ignore for Puma Star Jaya Tour
+.env
+*.log
+cookies*.txt
+test_*.php
+scratch_*.php
