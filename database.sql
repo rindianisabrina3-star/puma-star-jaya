@@ -6,10 +6,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 SET NAMES utf8mb4;
 SET TIME_ZONE = '+00:00';
 
-CREATE DATABASE IF NOT EXISTS `pumatour`;
-USE `pumatour`;
-
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
