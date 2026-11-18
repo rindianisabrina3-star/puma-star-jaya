@@ -101,15 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
         </form>
 
-        <!-- Akun Cepat Demo untuk Mempermudah Pengujian -->
-        <div style="margin-top: 20px; padding: 12px; background: #f1f5f9; border-radius: var(--radius-sm); font-size: 0.78rem; color: #475569;">
-            <div style="font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-key"></i> Akun Pengujian Sistem:</div>
-            <div>• Konsumen: <code>konsumen@gmail.com</code> / <code>user123</code></div>
-            <div>• Admin: <code>admin@pumatour.com</code> / <code>admin123</code></div>
-            <div>• Bendahara: <code>bendahara@pumatour.com</code> / <code>bendahara123</code></div>
-            <div>• Direktur: <code>direktur@pumatour.com</code> / <code>direktur123</code></div>
-        </div>
-
         <!-- Footer Navigasi Sesuai Gambar 26 -->
         <div class="auth-footer">
             <p>Belum Mempunyai Akun? <a href="<?= base_url('register.php') ?>">Daftar</a></p>
