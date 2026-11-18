@@ -13,7 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 function generate_automatic_receipt($pesanan, $noInvoice, $metode = 'QRIS Instan') {
     $uploadDir = __DIR__ . '/../uploads/';
     if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+        @mkdir($uploadDir, 0777, true);
     }
 
     $nominal = (int)$pesanan['harga'];
@@ -188,14 +188,8 @@ function generate_automatic_receipt($pesanan, $noInvoice, $metode = 'QRIS Instan
     }
 
     // ========================================================
-    // ENGINE 3: FALLBACK COPY RESMI
+    // ENGINE 3: DYNAMIC DIGITAL RECEIPT FALLBACK (Vercel Serverless & Cloud Ready)
     // ========================================================
-    $sampleFile = __DIR__ . '/../uploads/sample_bukti.jpg';
-    if (file_exists($sampleFile)) {
-        $fallbackName = 'BUKTI_FALLBACK_' . $pemesananId . '_' . $timestamp . '.jpg';
-        copy($sampleFile, $uploadDir . $fallbackName);
-        return $fallbackName;
-    }
-
-    return 'MIDTRANS_QRIS_AUTO.png';
+    // Pada serverless Vercel, bukti dilayani secara dinamis via bukti.php dengan nominal presisi
+    return $fileName;
 }

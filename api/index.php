@@ -47,11 +47,20 @@ if (is_dir($targetFile)) {
 }
 
 // 4. Jika file statis di uploads
-if (strpos($path, '/uploads/') === 0 && file_exists($targetFile)) {
-    $mime = mime_content_type($targetFile) ?: 'application/octet-stream';
-    header("Content-Type: $mime");
-    readfile($targetFile);
-    exit;
+if (strpos($path, '/uploads/') === 0) {
+    if (file_exists($targetFile)) {
+        $mime = mime_content_type($targetFile) ?: 'application/octet-stream';
+        header("Content-Type: $mime");
+        readfile($targetFile);
+        exit;
+    }
+
+    // Dynamic Fallback untuk bukti pembayaran di Vercel Serverless
+    if (preg_match('/\/uploads\/(BUKTI_[\w\.\-]+)/i', $path, $matches)) {
+        $_GET['file'] = $matches[1];
+        require __DIR__ . '/../bukti.php';
+        exit;
+    }
 }
 
 // 404 Handler
