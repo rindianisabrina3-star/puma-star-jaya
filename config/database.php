@@ -24,6 +24,7 @@ $pdoOptions = [
 
 // Opsi SSL untuk database cloud (seperti TiDB Cloud / Aiven)
 if (getenv('DB_SSL') === 'true' || $db_port == '4000' || strpos($db_host, 'tidbcloud') !== false) {
+    $pdoOptions[PDO::MYSQL_ATTR_SSL_CA] = true;
     $pdoOptions[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
 }
 
