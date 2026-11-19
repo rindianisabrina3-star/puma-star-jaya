@@ -345,11 +345,24 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <!-- Rincian Harga Sesuai Gambar 29: Rp. ... -->
+                    <?php 
+                    $subtotal = (int)$pesanan['jumlah_pax'] * (int)$pesanan['harga_satuan'];
+                    $diskon = max(0, $subtotal - (int)$pesanan['harga']);
+                    ?>
                     <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); padding: 20px; border: 1.5px solid var(--border-color); margin-bottom: 28px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 0.88rem; color: var(--text-muted);">Subtotal (<?= $pesanan['jumlah_pax'] ?> Pax &times; <?= format_rupiah($pesanan['harga_satuan']) ?>):</span>
+                            <strong style="font-size: 1rem; color: var(--primary);"><?= format_rupiah($subtotal) ?></strong>
+                        </div>
+                        <?php if ($diskon > 0): ?>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; color: #059669;">
+                            <span style="font-size: 0.88rem; font-weight: 700;"><i class="fa-solid fa-tags"></i> Potongan Kupon / Diskon:</span>
+                            <strong style="font-size: 1rem;">- <?= format_rupiah($diskon) ?></strong>
+                        </div>
+                        <?php endif; ?>
+                        <div style="border-top: 1px dashed var(--border-color); padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <span style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">RINCIAN HARGA TOTAL:</span>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">(<?= $pesanan['jumlah_pax'] ?> Pax &times; <?= format_rupiah($pesanan['harga_satuan']) ?>) - Diskon</div>
+                                <span style="font-size: 0.9rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">TOTAL AKHIR TAGIHAN:</span>
                             </div>
                             <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-hover);">
                                 <?= format_rupiah($pesanan['harga']) ?>

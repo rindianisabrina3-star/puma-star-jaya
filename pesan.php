@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Cek Kupon jika diisi
             if (!empty($kodeKupon)) {
-                $stmtKupon = $pdo->prepare("SELECT * FROM kupon WHERE BINARY kode = ? LIMIT 1");
+                $stmtKupon = $pdo->prepare("SELECT * FROM kupon WHERE UPPER(TRIM(kode)) = UPPER(TRIM(?)) LIMIT 1");
                 $stmtKupon->execute([$kodeKupon]);
                 $kuponData = $stmtKupon->fetch();
                 if ($kuponData) {
@@ -484,38 +484,66 @@ require_once __DIR__ . '/includes/header.php';
     }
 
     // AJAX Cek Kupon Potongan Harga
-    document.getElementById('btnCekKupon').addEventListener('click', function() {
-        const kode = document.getElementById('inputKupon').value.trim();
-        const resDiv = document.getElementById('couponResult');
-        const hiddenInput = document.getElementById('hiddenKodeKupon');
+    const inputKuponEl = document.getElementById('inputKupon');
+    const hiddenKuponEl = document.getElementById('hiddenKodeKupon');
+    const resDiv = document.getElementById('couponResult');
+    const btnCekKupon = document.getElementById('btnCekKupon');
 
-        if (!kode) {
-            resDiv.style.display = 'block';
-            resDiv.style.color = '#ef4444';
-            resDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Masukkan kode kupon terlebih dahulu!';
-            return;
-        }
+    if (inputKuponEl) {
+        inputKuponEl.addEventListener('input', function() {
+            hiddenKuponEl.value = this.value.trim().toUpperCase();
+        });
 
-        fetch('<?= base_url("api/check_coupon.php?kode=") ?>' + encodeURIComponent(kode))
-            .then(res => res.json())
-            .then(data => {
-                resDiv.style.display = 'block';
-                if (data.valid) {
-                    resDiv.style.color = '#059669';
-                    resDiv.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + data.message;
-                    hiddenInput.value = data.kode;
-                } else {
-                    resDiv.style.color = '#ef4444';
-                    resDiv.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + data.message;
-                    hiddenInput.value = '';
-                }
-            })
-            .catch(() => {
+        inputKuponEl.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                btnCekKupon.click();
+            }
+        });
+    }
+
+    if (btnCekKupon) {
+        btnCekKupon.addEventListener('click', function() {
+            const kode = inputKuponEl.value.trim();
+
+            if (!kode) {
                 resDiv.style.display = 'block';
                 resDiv.style.color = '#ef4444';
-                resDiv.innerHTML = 'Gagal menghubungi server untuk cek kupon.';
-            });
-    });
+                resDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Masukkan kode kupon terlebih dahulu!';
+                return;
+            }
+
+            fetch('<?= base_url("api/check_coupon.php?kode=") ?>' + encodeURIComponent(kode))
+                .then(res => res.json())
+                .then(data => {
+                    resDiv.style.display = 'block';
+                    if (data.valid) {
+                        resDiv.style.color = '#059669';
+                        resDiv.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + data.message;
+                        hiddenKuponEl.value = data.kode;
+                        inputKuponEl.value = data.kode;
+                    } else {
+                        resDiv.style.color = '#ef4444';
+                        resDiv.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + data.message;
+                        hiddenKuponEl.value = '';
+                    }
+                })
+                .catch(() => {
+                    resDiv.style.display = 'block';
+                    resDiv.style.color = '#ef4444';
+                    resDiv.innerHTML = 'Gagal menghubungi server untuk cek kupon.';
+                });
+        });
+    }
+
+    const mainFormEl = document.getElementById('mainOrderForm');
+    if (mainFormEl) {
+        mainFormEl.addEventListener('submit', function() {
+            if (inputKuponEl && inputKuponEl.value.trim()) {
+                hiddenKuponEl.value = inputKuponEl.value.trim().toUpperCase();
+            }
+        });
+    }
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

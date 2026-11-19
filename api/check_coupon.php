@@ -10,7 +10,7 @@ if (empty($kode)) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT * FROM kupon WHERE BINARY kode = ? LIMIT 1");
+$stmt = $pdo->prepare("SELECT * FROM kupon WHERE UPPER(TRIM(kode)) = UPPER(TRIM(?)) LIMIT 1");
 $stmt->execute([$kode]);
 $kupon = $stmt->fetch();
 
