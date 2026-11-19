@@ -1,6 +1,10 @@
 <?php
 // config/database.php - Koneksi Database PUMA_STAR_JAYA_TOUR (Support Local XAMPP & Vercel Cloud)
 
+if (!ob_get_level()) {
+    ob_start();
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     // Pada lingkungan serverless Vercel, direktori session disimpan di /tmp
     if (getenv('VERCEL') || isset($_ENV['VERCEL'])) {

@@ -1,16 +1,19 @@
 <?php
 // checkout.php - Halaman Rincian Pemesanan Paket Wisata Sesuai Gambar 29, Tabel 28 & Tabel 42
-$pageTitle = "Rincian Pemesanan Paket Wisata";
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: " . base_url('login.php'));
+    $redirectUrl = base_url('login.php');
+    header("Location: " . $redirectUrl);
+    echo "<script>window.location.href='" . $redirectUrl . "';</script>";
     exit;
 }
 
 $pemesananId = (int)($_GET['id'] ?? 0);
 if ($pemesananId <= 0) {
-    header("Location: " . base_url('paket.php'));
+    $redirectUrl = base_url('paket.php');
+    header("Location: " . $redirectUrl);
+    echo "<script>window.location.href='" . $redirectUrl . "';</script>";
     exit;
 }
 
@@ -24,7 +27,9 @@ $stmt->execute([$pemesananId, $_SESSION['user_id'], $_SESSION['level']]);
 $pesanan = $stmt->fetch();
 
 if (!$pesanan) {
-    header("Location: " . base_url('dashboard_konsumen.php'));
+    $redirectUrl = base_url('dashboard_konsumen.php');
+    header("Location: " . $redirectUrl);
+    echo "<script>window.location.href='" . $redirectUrl . "';</script>";
     exit;
 }
 
@@ -125,6 +130,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate_auto_proof']
     $stmtTrx->execute([$pemesananId]);
     $transaksi = $stmtTrx->fetch();
 }
+
+// Render header template
+$pageTitle = "Rincian Pemesanan Paket Wisata";
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="section" style="padding-top: 40px;">

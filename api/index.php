@@ -1,6 +1,10 @@
 <?php
 // api/index.php - Vercel Serverless Entrypoint & Router
 
+if (!ob_get_level()) {
+    ob_start();
+}
+
 // Parse requested URL path
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 $parsedUrl = parse_url($requestUri);

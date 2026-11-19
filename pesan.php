@@ -1,17 +1,20 @@
 <?php
 // pesan.php - Formulir Pemesanan Paket Wisata + Negosiasi In-System + Pemilihan Kursi Bus Interaktif
 require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/includes/header.php';
 
 // Pastikan pengguna sudah login sesuai Gambar 28
 if (!isset($_SESSION['user_id'])) {
-    header("Location: " . base_url('login.php?redirect=' . urlencode($_SERVER['REQUEST_URI'])));
+    $redirectUrl = base_url('login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    header("Location: " . $redirectUrl);
+    echo "<script>window.location.href='" . $redirectUrl . "';</script>";
     exit;
 }
 
 $paketId = (int)($_GET['id'] ?? 0);
 if ($paketId <= 0) {
-    header("Location: " . base_url('paket.php'));
+    $redirectUrl = base_url('paket.php');
+    header("Location: " . $redirectUrl);
+    echo "<script>window.location.href='" . $redirectUrl . "';</script>";
     exit;
 }
 
@@ -21,7 +24,9 @@ $stmt->execute([$paketId]);
 $paket = $stmt->fetch();
 
 if (!$paket) {
-    header("Location: " . base_url('paket.php'));
+    $redirectUrl = base_url('paket.php');
+    header("Location: " . $redirectUrl);
+    echo "<script>window.location.href='" . $redirectUrl . "';</script>";
     exit;
 }
 
@@ -55,7 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtInsert = $pdo->prepare("INSERT INTO pemesanan (user_id, paket_id, harga, harga_nego, status_nego, catatan_nego, tanggal_berangkat, nama_rombongan, jumlah_pax, kursi_dipilih, no_hp, created_at, updated_at) VALUES (?, ?, ?, ?, 'Menunggu', ?, ?, ?, ?, ?, ?, NOW(), NOW())");
                 if ($stmtInsert->execute([$userId, $paket['id'], $totalHarga, $hargaNego, $catatanNego, $tanggalBerangkat, $namaRombongan, $jumlahPax, $kursiDipilih, $noHp])) {
                     $pemesananId = $pdo->lastInsertId();
-                    header("Location: " . base_url('checkout.php?id=' . $pemesananId . '&nego=pending'));
+                    $redirectUrl = base_url('checkout.php?id=' . $pemesananId . '&nego=pending');
+                    header("Location: " . $redirectUrl);
+                    echo "<script>window.location.href='" . $redirectUrl . "';</script>";
                     exit;
                 } else {
                     $error = 'Gagal mengajukan negosiasi ke sistem. Coba lagi.';
@@ -81,7 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if ($stmtInsert->execute([$userId, $paket['id'], $totalHarga, $tanggalBerangkat, $namaRombongan, $jumlahPax, $kursiDipilih, $noHp])) {
                 $pemesananId = $pdo->lastInsertId();
-                header("Location: " . base_url('checkout.php?id=' . $pemesananId . (!empty($kodeKupon) ? '&kupon=' . urlencode($kodeKupon) : '')));
+                $redirectUrl = base_url('checkout.php?id=' . $pemesananId . (!empty($kodeKupon) ? '&kupon=' . urlencode($kodeKupon) : ''));
+                header("Location: " . $redirectUrl);
+                echo "<script>window.location.href='" . $redirectUrl . "';</script>";
                 exit;
             } else {
                 $error = 'Gagal menyimpan data pemesanan. Silakan coba kembali.';
@@ -89,6 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+// Sertakan header template saat ingin menampilkan HTML
+$pageTitle = "Pemesanan Paket Wisata - PT. Puma Star Jaya Tour";
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="section" style="padding-top: 40px;">
